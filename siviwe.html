@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clone challenge · pure CSS/HTML</title>
+  <style>
+    /* ---------- GLOBAL RESET & VARIABLES ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ---------- REUSABLE CONTAINER ---------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      width: 2.2rem;
+      height: 2.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 1.4rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #1e293b;
+      transition: color 0.2s;
+      font-size: 1rem;
+    }
+
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    .header-cta {
+      background: #0f172a;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: default; /* it's a demo, not a real button */
+      transition: 0.15s;
+    }
+
+    /* ---------- HERO SECTION with SLIDER ---------- */
+    .hero {
+      padding: 2.5rem 0 3rem;
+      background: linear-gradient(to bottom, #ffffff, #f1f5f9);
+    }
+
+    /* --- slider (pure CSS, radio-button controlled) --- */
+    .slider {
+      position: relative;
+      margin-bottom: 2.5rem;
+      border-radius: 2rem;
+      overflow: hidden;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.15);
+      background: #0f172a;
+      aspect-ratio: 16 / 7;
+    }
+
+    .slider input[type="radio"] {
+      display: none;
+    }
+
+    .slides {
+      display: flex;
+      width: 300%; /* 3 slides */
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .slide {
+      width: 33.3333%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.85) saturate(1.1);
+    }
+
+    /* overlay text on slides */
+    .slide-content {
+      position: absolute;
+      left: 2.5rem;
+      bottom: 2.5rem;
+      color: white;
+      text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      max-width: 60%;
+      z-index: 2;
+    }
+
+    .slide-content h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+
+    .slide-content p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    /* slider navigation dots (labels) */
+    .slider-nav {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      z-index: 10;
+    }
+
+    .slider-nav label {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      transition: all 0.25s;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .slider-nav label:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+
+    /* radio state changes */
+    #slide1:checked ~ .slides {
+      transform: translateX(0);
+    }
+
+    #slide2:checked ~ .slides {
+      transform: translateX(-33.3333%);
+    }
+
+    #slide3:checked ~ .slides {
+      transform: translateX(-66.6666%);
+    }
+
+    /* active dot highlight */
+    #slide1:checked ~ .slider-nav label:nth-child(1),
+    #slide2:checked ~ .slider-nav label:nth-child(2),
+    #slide3:checked ~ .slider-nav label:nth-child(3) {
+      background: white;
+      width: 28px;
+      border-radius: 20px;
+    }
+
+    /* --- media row: video & audio --- */
+    .media-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      margin: 2.5rem 0 1rem;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-card {
+      flex: 2 1 360px;
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 1.2rem 1.2rem 1rem;
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e9eef3;
+    }
+
+    .video-card video {
+      width: 100%;
+      border-radius: 1rem;
+      display: block;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.8rem;
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .audio-card {
+      flex: 1 1 260px;
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 1.8rem 1.5rem;
+      box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e9eef3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .audio-icon {
+      font-size: 2.8rem;
+      line-height: 1;
+      filter: drop-shadow(0 6px 8px rgba(37, 99, 235, 0.2));
+    }
+
+    .audio-card p {
+      font-weight: 500;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+
+    audio {
+      width: 100%;
+      border-radius: 40px;
+      background: #f1f5f9;
+      padding: 0.2rem;
+    }
+
+    /* ---------- LIST SECTION (two lists) ---------- */
+    .list-section {
+      padding: 3rem 0 2rem;
+      background: #ffffff;
+    }
+
+    .list-section h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #0f172a;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .list-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      justify-content: center;
+    }
+
+    .list-card {
+      background: #f8fafc;
+      border-radius: 1.5rem;
+      padding: 1.8rem 2rem;
+      flex: 1 1 280px;
+      border: 1px solid #e2e8f0;
+      transition: 0.2s;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+    }
+
+    .list-card:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 15px 25px -10px rgba(0, 0, 0, 0.08);
+    }
+
+    .list-card h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .list-card ul {
+      list-style: none;
+    }
+
+    .list-card li {
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    .list-card li:last-child {
+      border-bottom: none;
+    }
+
+    .list-card li::before {
+      content: "✓";
+      background: #dbeafe;
+      color: #1e40af;
+      width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* second list with different bullet */
+    .alt-list li::before {
+      content: "★";
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    /* ---------- FOOTER ---------- */
+    footer {
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 2.5rem 0 1.8rem;
+      margin-top: 2rem;
+    }
+
+    .footer-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand {
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: #94a3b8;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .footer-copy {
+      text-align: center;
+      border-top: 1px solid #1e293b;
+      padding-top: 1.8rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    /* ---------- RESPONSIVE TWEAKS ---------- */
+    @media (max-width: 700px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav-links {
+        gap: 1.2rem;
+        flex-wrap: wrap;
+      }
+
+      .slider {
+        aspect-ratio: 16 / 10;
+      }
+
+      .slide-content {
+        left: 1.5rem;
+        bottom: 1.8rem;
+        max-width: 85%;
+      }
+
+      .slide-content h2 {
+        font-size: 1.5rem;
+      }
+
+      .slide-content p {
+        font-size: 0.95rem;
+      }
+
+      .slider-nav label {
+        width: 12px;
+        height: 12px;
+      }
+
+      #slide1:checked ~ .slider-nav label:nth-child(1),
+      #slide2:checked ~ .slider-nav label:nth-child(2),
+      #slide3:checked ~ .slider-nav label:nth-child(3) {
+        width: 22px;
+      }
+
+      .list-card {
+        padding: 1.5rem;
+      }
+
+      .footer-grid {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* simple placeholder for image backgrounds — all slides use inline SVG */
+    .slide img {
+      background: #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <!-- ========== HEADER ========== -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <span class="logo-icon">⬤</span>
+        <span>clone<span style="color: #2563eb;">.studio</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Media</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <button class="header-cta" aria-label="demo button">Sign up</button>
+    </div>
+  </header>
+
+  <!-- ========== HERO SECTION WITH SLIDER ========== -->
+  <section class="hero">
+    <div class="container">
+      <!-- PURE CSS SLIDER (radio controlled) -->
+      <div class="slider">
+        <!-- 3 hidden radio buttons -->
+        <input type="radio" name="hero-slider" id="slide1" checked>
+        <input type="radio" name="hero-slider" id="slide2">
+        <input type="radio" name="hero-slider" id="slide3">
+
+        <!-- slides container -->
+        <div class="slides">
+          <!-- slide 1 -->
+          <div class="slide">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='525' viewBox='0 0 1200 525'%3E%3Crect width='1200' height='525' fill='%231e293b'/%3E%3Ccircle cx='200' cy='200' r='140' fill='%232563eb' opacity='0.25'/%3E%3Ccircle cx='950' cy='350' r='200' fill='%237c3aed' opacity='0.2'/%3E%3Cpath d='M0 400 L300 250 L550 380 L800 200 L1200 450 L1200 525 L0 525 Z' fill='%230f172a' opacity='0.6'/%3E%3Ctext x='80' y='120' font-family='system-ui' font-size='42' font-weight='bold' fill='white' opacity='0.9'%3EDiscover%3C/text%3E%3Ctext x='80' y='180' font-family='system-ui' font-size='32' fill='%23cbd5e1'%3Enew perspectives%3C/text%3E%3C/svg%3E"
+                 alt="Abstract mountain landscape">
+            <div class="slide-content">
+              <h2>Explore nature</h2>
+              <p>Breathtaking views & pure serenity</p>
+            </div>
+          </div>
+
+          <!-- slide 2 -->
+          <div class="slide">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='525' viewBox='0 0 1200 525'%3E%3Crect width='1200' height='525' fill='%230f172a'/%3E%3Crect x='100' y='80' width='400' height='300' rx='40' fill='%232563eb' opacity='0.2'/%3E%3Ccircle cx='900' cy='180' r='150' fill='%23a855f7' opacity='0.25'/%3E%3Cpath d='M0 350 L200 280 L400 380 L700 230 L1000 360 L1200 300 L1200 525 L0 525 Z' fill='%231e293b' opacity='0.8'/%3E%3Ctext x='80' y='140' font-family='system-ui' font-size='46' font-weight='bold' fill='%23ffffff' opacity='0.95'%3ECity lights%3C/text%3E%3Ctext x='80' y='200' font-family='system-ui' font-size='30' fill='%23cbd5e1'%3Evibrant energy%3C/text%3E%3C/svg%3E"
+                 alt="Abstract city skyline">
+            <div class="slide-content">
+              <h2>Urban vibes</h2>
+              <p>Where the city never sleeps</p>
+            </div>
+          </div>
+
+          <!-- slide 3 -->
+          <div class="slide">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='525' viewBox='0 0 1200 525'%3E%3Crect width='1200' height='525' fill='%23111827'/%3E%3Cpath d='M200 100 Q 400 0 600 100 T 1000 100' stroke='%233b82f6' stroke-width='6' fill='none' opacity='0.4'/%3E%3Cpath d='M100 350 Q 350 250 550 350 T 1100 300' stroke='%23a855f7' stroke-width='6' fill='none' opacity='0.4'/%3E%3Ccircle cx='850' cy='400' r='180' fill='%232563eb' opacity='0.15'/%3E%3Ccircle cx='300' cy='150' r='120' fill='%238b5cf6' opacity='0.2'/%3E%3Ctext x='80' y='150' font-family='system-ui' font-size='44' font-weight='bold' fill='white' opacity='0.9'%3EArt &amp; sound%3C/text%3E%3Ctext x='80' y='210' font-family='system-ui' font-size='30' fill='%23cbd5e1'%3Eimmersive media%3C/text%3E%3C/svg%3E"
+                 alt="Abstract art and sound waves">
+            <div class="slide-content">
+              <h2>Multisensory</h2>
+              <p>See, hear, feel the story</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- navigation dots (labels) -->
+        <div class="slider-nav">
+          <label for="slide1" aria-label="Slide 1"></label>
+          <label for="slide2" aria-label="Slide 2"></label>
+          <label for="slide3" aria-label="Slide 3"></label>
+        </div>
+      </div>
+
+      <!-- MEDIA ROW (video & sound) -->
+      <div class="media-row">
+        <!-- video card -->
+        <div class="video-card">
+          <video controls poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'%3E%3Crect width='640' height='360' fill='%230f172a'/%3E%3Ctext x='40' y='180' font-family='system-ui' font-size='28' fill='%23ffffff' opacity='0.7'%3E🎬 demo video%3C/text%3E%3C/svg%3E">
+            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-caption">
+            <span>🎥 sample footage</span>
+            <span style="color: #2563eb; font-size: 0.85rem;">with controls</span>
+          </div>
+        </div>
+
+        <!-- audio card -->
+        <div class="audio-card">
+          <div class="audio-icon">🎧</div>
+          <p>Ambient soundscape</p>
+          <audio controls>
+            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <span style="font-size: 0.8rem; color: #64748b;">click play to listen</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== LIST SECTION (two lists) ========== -->
+  <section class="list-section">
+    <div class="container">
+      <h2>Why students clone this</h2>
+      <div class="list-grid">
+        <!-- first list -->
+        <div class="list-card">
+          <h3>📋 Core features</h3>
+          <ul>
+            <li>Pure CSS slider (no JS)</li>
+            <li>HTML5 video with poster</li>
+            <li>Embedded audio element</li>
+            <li>Responsive flex layout</li>
+            <li>Semantic header & footer</li>
+          </ul>
+        </div>
+        <!-- second list -->
+        <div class="list-card">
+          <h3>⭐ Skill builders</h3>
+          <ul class="alt-list">
+            <li>Radio :checked pseudo-class</li>
+            <li>Transition & transforms</li>
+            <li>Media queries for mobile</li>
+            <li>SVG data URI backgrounds</li>
+            <li>CSS custom shadows & spacing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-icon" style="width: 1.8rem; height: 1.8rem; font-size: 1.1rem;">⬤</span>
+          clone.studio
+        </div>
+        <ul class="footer-links">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">GitHub</a></li>
+          <li><a href="#">Dribbble</a></li>
+        </ul>
+      </div>
+      <div class="footer-copy">
+        © 2025 — front-end clone challenge. all media used for demonstration.
+      </div>
+    </div>
+  </footer>
+
+  <!-- no JavaScript — pure CSS/HTML only -->
+</body>
+</html>
